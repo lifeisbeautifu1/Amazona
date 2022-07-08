@@ -1,15 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HelmetProvider } from 'react-helmet-async';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
-
+import { AppContextProvider } from './context';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <AppContextProvider>
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>
+    </AppContextProvider>
   </React.StrictMode>
 );
 
