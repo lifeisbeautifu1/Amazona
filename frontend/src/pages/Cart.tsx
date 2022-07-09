@@ -1,11 +1,7 @@
 import { useAppContext } from '../context';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import { Row, Col, ListGroup, Button, Card } from 'react-bootstrap';
 import { Message } from '../components';
 import { ICartProduct } from '../context';
 

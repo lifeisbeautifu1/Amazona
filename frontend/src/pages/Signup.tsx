@@ -7,14 +7,16 @@ import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import { getError } from '../utils';
 
-const Signin = () => {
+const Signup = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
 
   const redirectURL = new URLSearchParams(search).get('redirect');
   const redirect = redirectURL ? redirectURL : '/';
 
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
 
   const { state, dispatch: ctxDispatch } = useAppContext();
@@ -23,9 +25,13 @@ const Signin = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!password || !email) return;
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match!');
+      return;
+    }
     try {
-      const { data } = await axios.post('/api/users/signin', {
+      const { data } = await axios.post('/api/users/signup', {
+        name,
         email,
         password,
       });
@@ -47,10 +53,19 @@ const Signin = () => {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Sign In</title>
+        <title>Sign Up</title>
       </Helmet>
-      <h1 className="my-3 text-center">Sign In</h1>
+      <h1 className="my-3 text-center">Sign Up</h1>
       <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Email</Form.Label>
           <Form.Control
@@ -69,16 +84,25 @@ const Signin = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Confirm password</Form.Label>
+          <Form.Control
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </Form.Group>
         <div className="mb-3">
-          <Button type="submit">Sign In</Button>
+          <Button type="submit">Sign Up</Button>
         </div>
         <div className="mb-3">
-          New Customer?{' '}
-          <Link to={`/signup?redirect=${redirect}`}>Create your account</Link>
+          Already have an account?{' '}
+          <Link to={`/signin?redirect=${redirect}`}>Sign In</Link>
         </div>
       </Form>
     </Container>
   );
 };
 
-export default Signin;
+export default Signup;

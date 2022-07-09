@@ -1,4 +1,20 @@
+import bcrypt from 'bcryptjs';
+
 export default {
+  users: [
+    {
+      name: 'harry',
+      email: 'harry@gmail.com',
+      password: bcrypt.hashSync('123456'),
+      isAdmin: true,
+    },
+    {
+      name: 'alexey',
+      email: 'alexey@gmail.com',
+      password: bcrypt.hashSync('123456'),
+      isAdmin: false,
+    },
+  ],
   products: [
     {
       // _id: '1',

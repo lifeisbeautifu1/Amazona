@@ -2,9 +2,8 @@ import { IProduct } from '../interfaces';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context';
 import axios from 'axios';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
 import React from 'react';
+import { Card, Button } from 'react-bootstrap';
 import { Rating } from '../components';
 
 interface ProductProps {

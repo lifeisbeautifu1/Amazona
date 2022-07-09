@@ -2,3 +2,8 @@ export { default as Home } from './Home';
 export { default as Product } from './Product';
 export { default as Cart } from './Cart';
 export { default as Signin } from './Signin';
+export { default as Signup } from './Signup';
+export { default as Order } from './Order';
+export { default as ShippingAddress } from './ShippingAddress';
+export { default as PaymentMethod } from './PaymentMethod';
+export { default as PlaceOrder } from './PlaceOrder';

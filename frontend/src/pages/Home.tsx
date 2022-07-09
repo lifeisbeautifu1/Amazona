@@ -2,14 +2,12 @@ import axios from 'axios';
 import { useReducer, useEffect } from 'react';
 import { Product, Loading, Message } from '../components';
 import { productsReducer } from '../reducers/productsReducer';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import logger from 'use-reducer-logger';
+import { Row, Col } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const [{ error, products, isLoading }, dispatch] = useReducer(
-    logger(productsReducer),
+    productsReducer,
     {
       isLoading: true,
       error: '',
