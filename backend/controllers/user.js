@@ -33,3 +33,29 @@ export const signup = expressAsyncHandler(async (req, res) => {
     token: generateToken(user),
   });
 });
+
+export const updateProfile = expressAsyncHandler(async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(401).json({ message: 'Not all fields provided' });
+  }
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name,
+      email,
+      password: bcrypt.hashSync(password),
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).json({
+    name: user.name,
+    _id: user._id,
+    email: user.email,
+    isAdmin: user.isAdmin,
+    token: generateToken(user),
+  });
+});

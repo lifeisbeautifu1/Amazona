@@ -31,7 +31,7 @@ export default {
     },
     {
       // _id: '2',
-      name: 'Addidas Fit Shirt',
+      name: 'Adidas Fit Shirt',
       slug: 'adidas-fit-shirt',
       category: 'Shirts',
       image: '/images/p2.jpeg',

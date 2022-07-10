@@ -7,6 +7,8 @@ import { Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { Loading, Message } from '../components';
 import { getError } from '../utils';
 import { IOrder } from '../interfaces';
+import { toast } from 'react-toastify';
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
 const Order = () => {
   const navigate = useNavigate();
@@ -17,6 +19,51 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [order, setOrder] = useState<IOrder>({} as IOrder);
+
+  const [loadingPay, setLoadingPay] = useState(false);
+  const [successPay, setSuccessPay] = useState(false);
+
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  function createOrder(data: any, actions: any) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: {
+              value: order.totalPrice,
+            },
+          },
+        ],
+      })
+      .then((orderId: any) => {
+        return orderId;
+      });
+  }
+
+  function onApprove(data: any, actions: any) {
+    return actions.order.capture().then(async function (details: any) {
+      try {
+        setLoadingPay(true);
+        await axios.patch(`/api/orders/${order?._id}/pay`, details, {
+          headers: {
+            authorization: `Bearer ${userInfo?.token}`,
+          },
+        });
+        toast.success('Order is paid');
+        setSuccessPay(true);
+        setLoadingPay(false);
+      } catch (error) {
+        setLoadingPay(false);
+        toast.error(getError(error));
+      }
+    });
+  }
+
+  function onError(error: any) {
+    toast.error(getError(error));
+  }
+
   useEffect(() => {
     const fetchOrder = async () => {
       setIsLoading(true);
@@ -34,10 +81,29 @@ const Order = () => {
       }
     };
     if (!userInfo) navigate('/');
-    if (!order?._id || (order?._id && order?._id !== orderId)) {
+    if (!order?._id || successPay || (order?._id && order?._id !== orderId)) {
       fetchOrder();
+      if (successPay) {
+        setSuccessPay(false);
+        setLoadingPay(false);
+      }
+    } else {
+      const loadPaypalScript = async () => {
+        paypalDispatch({
+          type: 'resetOptions',
+          value: {
+            'client-id': process.env.REACT_APP_PAYPAL_ID || 'sb',
+            currency: 'USD',
+          },
+        });
+        // paypalDispatch({
+        //   type: 'setLoadingStatus',
+        //   value: 'pending',
+        // });
+      };
+      loadPaypalScript();
     }
-  }, [order, userInfo, orderId, navigate]);
+  }, [order, userInfo, orderId, navigate, paypalDispatch, successPay]);
   return isLoading ? (
     <Loading />
   ) : error ? (
@@ -142,6 +208,22 @@ const Order = () => {
                     </Col>
                   </Row>
                 </ListGroup.Item>
+                {!order.isPaid && (
+                  <ListGroup.Item>
+                    {isPending ? (
+                      <Loading />
+                    ) : (
+                      <div>
+                        <PayPalButtons
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        ></PayPalButtons>
+                      </div>
+                    )}
+                    {loadingPay && <Loading />}
+                  </ListGroup.Item>
+                )}
               </ListGroup>
             </Card.Body>
           </Card>

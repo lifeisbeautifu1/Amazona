@@ -1,11 +1,12 @@
 import React from 'react';
 
 interface RatingProps {
-  rating: number;
-  numReviews: number;
+  rating: number | string;
+  numReviews?: number;
+  caption?: string;
 }
 
-const Rating: React.FC<RatingProps> = ({ rating, numReviews }) => {
+const Rating: React.FC<RatingProps> = ({ rating, numReviews, caption }) => {
   return (
     <div className="rating">
       <span>
@@ -63,7 +64,11 @@ const Rating: React.FC<RatingProps> = ({ rating, numReviews }) => {
           }
         />
       </span>
-      <span> {numReviews} reviews</span>
+      {caption ? (
+        <span> {caption}</span>
+      ) : (
+        <span>{' ' + numReviews + ' reviews'}</span>
+      )}
     </div>
   );
 };

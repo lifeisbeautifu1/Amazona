@@ -52,4 +52,5 @@ export interface IOrder {
   paidAt: string;
   isDelivered: boolean;
   deliveredAt: string;
+  createdAt: string;
 }

@@ -46,7 +46,8 @@ main h1 {
   max-width: 400px;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-outline-primary {
   background-color: #f0c040;
   color: #fff;
   border: none;
@@ -66,3 +67,39 @@ main h1 {
   color: #f08000;
 }
 
+.navbar-brand {
+  font-weight: bold;
+}
+
+.side-navbar {
+  width: 240px;
+  height: 100%;
+  position: absolute;
+  left: -300px;
+  background-color: #100901;
+  transition: .5s
+}
+
+.site-container {
+  transition: .4s;
+}
+
+.active-cont {
+  margin-left: 240px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.active-nav {
+  left: 0;
+}
+
+.text-bold {
+  font-weight: 900;
+}
+
+.table tbody tr {
+  vertical-align: middle;
+}
