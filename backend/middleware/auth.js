@@ -7,6 +7,7 @@ const authMiddleware = (req, res, next) => {
   )
     return res.status(401).json({ message: 'Token not provided' });
   const token = req.headers.authorization.split(' ')[1];
+  // console.log(token);
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
     req.user = user;

@@ -4,12 +4,20 @@ export interface IProduct {
   slug: string;
   category: string;
   image: string;
+  images: string[];
   price: number;
   countInStock: number;
   brand: string;
   rating: number;
   numReviews: number;
   description: string;
+  reviews: {
+    name: string;
+    rating: number;
+    comment: string;
+    _id: string;
+    createdAt: string;
+  }[];
 }
 
 export interface IUserInfo {
@@ -47,7 +55,7 @@ export interface IOrder {
   shippingPrice: number;
   taxPrice: number;
   totalPrice: number;
-  user: string;
+  user: IUserInfo;
   isPaid: boolean;
   paidAt: string;
   isDelivered: boolean;

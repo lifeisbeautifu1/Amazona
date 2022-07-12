@@ -8,6 +8,62 @@ export const getProducts = expressAsyncHandler(async (req, res) => {
   res.status(200).json(products);
 });
 
+export const postReview = expressAsyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    if (product.reviews.find((review) => review.name === req.user.name)) {
+      return res.status(400).json({ message: 'You already submitted review' });
+    } else {
+      const review = {
+        name: req.user.name,
+        rating: req.body.rating,
+        comment: req.body.comment,
+      };
+      product.reviews.push(review);
+      product.numReviews = product.reviews.length;
+      product.rating =
+        product.reviews.reduce((total, review) => total + review.rating, 0) /
+        product.reviews.length;
+      const updatedProduct = await product.save();
+      res.status(201).json({ product: updatedProduct });
+      // res.status(201).json({
+      //   message: 'Review Created',
+      //   review: updatedProduct.reviews[updatedProduct.reviews.length - 1],
+      //   numReviews: product.numReviews,
+      //   rating: product.rating,
+      // });
+    }
+  } else {
+    res.status(404).json({ message: 'Product Not Found' });
+  }
+});
+
+export const createProduct = expressAsyncHandler(async (req, res) => {
+  const product = await Product.create({
+    name: 'sample name ' + Date.now(),
+    slug: 'sample-name-' + Date.now(),
+    image: '/images/p1.jpeg',
+    images: [],
+    price: 0,
+    category: 'sample category',
+    brand: 'sample brand',
+    countInStock: 0,
+    rating: 0,
+    reviews: [],
+    numReviews: 0,
+    description: 'sample description',
+  });
+  res.status(201).json({
+    message: 'Product Created',
+    product,
+  });
+});
+
+export const deleteProduct = expressAsyncHandler(async (req, res) => {
+  await Product.findByIdAndDelete(req.params.id);
+  res.status(200).json({ message: 'Product Deleted' });
+});
+
 export const getProductsAdmin = expressAsyncHandler(async (req, res) => {
   const page = req.query.page || 1;
   const pageSize = req.query.pageSize || PAGE_SIZE;
@@ -130,4 +186,18 @@ export const getProduct = expressAsyncHandler(async (req, res) => {
   } else {
     res.status(404).json({ message: 'Product Not Found' });
   }
+});
+
+export const updateProduct = expressAsyncHandler(async (req, res) => {
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    {
+      ...req.body,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).json({ message: 'Product updated' });
 });

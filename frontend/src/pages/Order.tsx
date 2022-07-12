@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../context';
-import { Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
 import { Loading, Message } from '../components';
 import { getError } from '../utils';
 import { IOrder } from '../interfaces';
@@ -22,6 +22,30 @@ const Order = () => {
 
   const [loadingPay, setLoadingPay] = useState(false);
   const [successPay, setSuccessPay] = useState(false);
+  const [isLoadingDelivery, setIsLoadingDelivery] = useState(false);
+  const [successDelivery, setSuccessDelivery] = useState(false);
+
+  const handleDelivery = async () => {
+    try {
+      setIsLoadingDelivery(true);
+      setSuccessDelivery(false);
+      await axios.patch(
+        `/api/orders/${orderId}/deliver`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${userInfo?.token}`,
+          },
+        }
+      );
+      setSuccessDelivery(true);
+      setIsLoadingDelivery(false);
+    } catch (error) {
+      toast.error(getError(error));
+      setSuccessDelivery(false);
+      setIsLoadingDelivery(false);
+    }
+  };
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
@@ -81,11 +105,19 @@ const Order = () => {
       }
     };
     if (!userInfo) navigate('/');
-    if (!order?._id || successPay || (order?._id && order?._id !== orderId)) {
+    if (
+      !order?._id ||
+      successPay ||
+      successDelivery ||
+      (order?._id && order?._id !== orderId)
+    ) {
       fetchOrder();
       if (successPay) {
         setSuccessPay(false);
         setLoadingPay(false);
+      }
+      if (successDelivery) {
+        setSuccessDelivery(false);
       }
     } else {
       const loadPaypalScript = async () => {
@@ -103,7 +135,15 @@ const Order = () => {
       };
       loadPaypalScript();
     }
-  }, [order, userInfo, orderId, navigate, paypalDispatch, successPay]);
+  }, [
+    order,
+    userInfo,
+    orderId,
+    navigate,
+    paypalDispatch,
+    successPay,
+    successDelivery,
+  ]);
   return isLoading ? (
     <Loading />
   ) : error ? (
@@ -222,6 +262,20 @@ const Order = () => {
                       </div>
                     )}
                     {loadingPay && <Loading />}
+                  </ListGroup.Item>
+                )}
+                {userInfo?.isAdmin && order?.isPaid && !order?.isDelivered && (
+                  <ListGroup.Item>
+                    {isLoadingDelivery && <Loading />}
+                    <div className="d-grid">
+                      <Button
+                        type="button"
+                        variant="primary"
+                        onClick={handleDelivery}
+                      >
+                        Deliver Order
+                      </Button>
+                    </div>
                   </ListGroup.Item>
                 )}
               </ListGroup>

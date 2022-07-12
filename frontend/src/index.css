@@ -103,3 +103,7 @@ a {
 .table tbody tr {
   vertical-align: middle;
 }
+
+button.thumbnail {
+  padding: 0;
+}

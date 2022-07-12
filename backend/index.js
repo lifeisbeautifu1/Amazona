@@ -8,6 +8,7 @@ import seedRouter from './routes/seed.js';
 import productRouter from './routes/product.js';
 import userRouter from './routes/user.js';
 import orderRouter from './routes/order.js';
+import uploadRouter from './routes/upload.js';
 
 import authMiddleware from './middleware/auth.js';
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/seed', seedRouter);
+app.use('/api/upload', uploadRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', authMiddleware, orderRouter);

@@ -12,3 +12,7 @@ export { default as PaymentMethod } from './PaymentMethod';
 export { default as PlaceOrder } from './PlaceOrder';
 export { default as OrderHistory } from './OrderHistory';
 export { default as ProductList } from './ProductList';
+export { default as ProductEdit } from './ProductEdit';
+export { default as OrderList } from './OrderList';
+export { default as UserList } from './UserList';
+export { default as EditUser } from './EditUser';

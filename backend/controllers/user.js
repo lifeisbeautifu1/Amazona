@@ -28,7 +28,7 @@ export const signup = expressAsyncHandler(async (req, res) => {
   res.status(200).json({
     name: user.name,
     _id: user._id,
-    email: user._id,
+    email: user.email,
     isAdmin: user.isAdmin,
     token: generateToken(user),
   });
@@ -39,12 +39,13 @@ export const updateProfile = expressAsyncHandler(async (req, res) => {
   if (!name || !email || !password) {
     return res.status(401).json({ message: 'Not all fields provided' });
   }
+  const hashedPassword = bcrypt.hashSync(password);
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
       name,
       email,
-      password: bcrypt.hashSync(password),
+      password: hashedPassword,
     },
     {
       new: true,
@@ -58,4 +59,35 @@ export const updateProfile = expressAsyncHandler(async (req, res) => {
     isAdmin: user.isAdmin,
     token: generateToken(user),
   });
+});
+
+export const getAllUsers = expressAsyncHandler(async (req, res) => {
+  const users = await User.find();
+  res.status(200).json(users);
+});
+
+export const getUser = expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
+});
+
+export const updateUser = expressAsyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404).json('User not found');
+  }
+});
+
+export const deleteUser = expressAsyncHandler(async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.status(200).json({ message: 'User deleted' });
 });

@@ -119,3 +119,22 @@ export const updatePayment = expressAsyncHandler(async (req, res) => {
   );
   res.status(200).json({ message: 'Order Paid', order });
 });
+
+export const getOrders = expressAsyncHandler(async (req, res) => {
+  const orders = await Order.find().populate('user', 'name');
+  console.log(orders);
+  res.status(200).json(orders);
+});
+
+export const updateDelievery = expressAsyncHandler(async (req, res) => {
+  await Order.findByIdAndUpdate(req.params.id, {
+    isDelivered: true,
+    deliveredAt: Date.now(),
+  });
+  res.status(200).json({ message: 'Order delivered' });
+});
+
+export const deleteOrder = expressAsyncHandler(async (req, res) => {
+  await Order.findByIdAndDelete(req.params.id);
+  res.status(200).json({ message: 'Order Deleted' });
+});

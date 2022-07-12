@@ -98,10 +98,12 @@ const Cart = () => {
                       0
                     )}{' '}
                     item) : ${' '}
-                    {cartItems.reduce(
-                      (total, item) => total + item.quantity * item.price,
-                      0
-                    )}
+                    {cartItems
+                      .reduce(
+                        (total, item) => total + item.quantity * item.price,
+                        0
+                      )
+                      .toFixed(2)}
                   </h3>
                 </ListGroup.Item>
                 <ListGroup.Item>

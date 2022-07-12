@@ -14,6 +14,10 @@ import {
   OrderHistory,
   Dashboard,
   ProductList,
+  ProductEdit,
+  OrderList,
+  UserList,
+  EditUser,
 } from './pages';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -103,10 +107,42 @@ function App() {
                 }
               />
               <Route
+                path="/admin/users"
+                element={
+                  <AdminRoute>
+                    <UserList />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/user/:id"
+                element={
+                  <AdminRoute>
+                    <EditUser />
+                  </AdminRoute>
+                }
+              />
+              <Route
                 path="/admin/products"
                 element={
                   <AdminRoute>
                     <ProductList />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/orders"
+                element={
+                  <AdminRoute>
+                    <OrderList />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/product/:id"
+                element={
+                  <AdminRoute>
+                    <ProductEdit />
                   </AdminRoute>
                 }
               />
